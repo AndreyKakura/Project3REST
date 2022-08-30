@@ -1,5 +1,8 @@
 package com.kakura.springcourse.Project3REST.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
@@ -19,6 +22,7 @@ public class Sensor {
     @Size(min = 3, max = 30, message = "Name should be between 3 and 30 characters")
     private String name;
 
+    //@JsonManagedReference
     @OneToMany(mappedBy = "sensor")
     private List<Measurement> measurements;
 
@@ -42,6 +46,7 @@ public class Sensor {
         this.name = name;
     }
 
+    @JsonIgnore
     public List<Measurement> getMeasurements() {
         return measurements;
     }

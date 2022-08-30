@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -24,19 +25,22 @@ public class MeasurementsService {
         this.sensorsRepository = sensorsRepository;
     }
 
-    Optional<Sensor> getMeasurementSensor(Measurement measurement) {
-        return sensorsRepository.findByName(measurement.getSensor().getName()).stream().findAny();
-    }
-
-
     @Transactional
     public void save(Measurement measurement) {
         enrichMeasurement(measurement);
         measurementsRepository.save(measurement);
     }
 
+    public List<Measurement> findAll() {
+        return measurementsRepository.findAll();
+    }
+
+    public Long getRainyDaysCount() {
+        return measurementsRepository.findAll().stream().filter(Measurement::isRaining).count();
+    }
+
     private void enrichMeasurement(Measurement measurement) {
         measurement.setTakenOn(LocalDateTime.now());
-        measurement.setSensor(getMeasurementSensor(measurement).get());
+        measurement.setSensor(sensorsRepository.findByName(measurement.getSensor().getName()).get());
     }
 }

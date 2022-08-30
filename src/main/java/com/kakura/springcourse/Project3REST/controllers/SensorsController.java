@@ -5,11 +5,11 @@ import com.kakura.springcourse.Project3REST.models.Sensor;
 import com.kakura.springcourse.Project3REST.services.SensorsService;
 import com.kakura.springcourse.Project3REST.util.SensorErrorResponse;
 import com.kakura.springcourse.Project3REST.util.SensorNotCreatedException;
+import com.kakura.springcourse.Project3REST.util.SensorValidator;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
@@ -23,15 +23,21 @@ public class SensorsController {
 
     private final SensorsService sensorsService;
     private final ModelMapper modelMapper;
+    private final SensorValidator sensorValidator;
 
     @Autowired
-    public SensorsController(SensorsService sensorsService, ModelMapper modelMapper) {
+    public SensorsController(SensorsService sensorsService, ModelMapper modelMapper, SensorValidator sensorValidator) {
         this.sensorsService = sensorsService;
         this.modelMapper = modelMapper;
+        this.sensorValidator = sensorValidator;
     }
 
     @PostMapping("/registration")
     public ResponseEntity<HttpStatus> create(@RequestBody @Valid SensorDTO sensorDTO, BindingResult bindingResult) {
+
+        Sensor sensor = convertToSensor(sensorDTO);
+        sensorValidator.validate(sensor, bindingResult);
+
         if (bindingResult.hasErrors()) {
             StringBuilder errorMsg = new StringBuilder();
             List<FieldError> errors = bindingResult.getFieldErrors();
@@ -43,7 +49,7 @@ public class SensorsController {
             throw new SensorNotCreatedException(errorMsg.toString());
         }
 
-        sensorsService.save(convertToSensor(sensorDTO));
+        sensorsService.save(sensor);
         return ResponseEntity.ok(HttpStatus.OK);
     }
 

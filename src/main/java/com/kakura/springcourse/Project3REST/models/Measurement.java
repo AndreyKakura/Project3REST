@@ -1,5 +1,6 @@
 package com.kakura.springcourse.Project3REST.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import org.hibernate.annotations.Fetch;
 
 import javax.persistence.*;
@@ -29,6 +30,7 @@ public class Measurement {
     @NotNull
     private LocalDateTime takenOn;
 
+    //@JsonBackReference
     @NotNull(message = "Sensor should not be empty")
     @ManyToOne
     @JoinColumn(name = "sensor_id", referencedColumnName = "id")
