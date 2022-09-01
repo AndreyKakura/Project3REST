@@ -12,7 +12,7 @@ public class MeasurementDTO {
     @NotNull
     @DecimalMin(value = "-100", message = "Value should be greater than -100")
     @DecimalMax(value = "100", message = "Value should not be greater than 100")
-    private double value;
+    private Double value;
 
     @NotNull(message = "Raining parameter should not be empty")
     private boolean raining;
@@ -20,11 +20,11 @@ public class MeasurementDTO {
     @NotNull(message = "Sensor should not be empty")
     private SensorDTO sensor;
 
-    public double getValue() {
+    public Double getValue() {
         return value;
     }
 
-    public void setValue(double value) {
+    public void setValue(Double value) {
         this.value = value;
     }
 
